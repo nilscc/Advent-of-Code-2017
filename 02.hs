@@ -14,11 +14,12 @@ isEqual f a b = test ("f(" ++ show a ++ ") = " ++ show b) (f a == b)
 rowDiff :: [Integer] -> Integer
 rowDiff l = maximum(l) - minimum(l)
 
-checksum :: [[Integer]] -> Integer
-checksum = sum . map rowDiff
+checksum1 :: [[Integer]] -> Integer
+checksum1 = sum . map rowDiff
 
 part1 :: IO ()
 part1 = do
+
   let row1 = [5, 1, 9, 5]
       row2 = [7, 5, 3]
       row3 = [2, 4, 6, 8]
@@ -27,22 +28,50 @@ part1 = do
   isEqual rowDiff row1 8
   isEqual rowDiff row2 4
   isEqual rowDiff row3 6
-  isEqual checksum sheet 18
+  isEqual checksum1 sheet 18
 
-  print $ checksum input1
+  print $ checksum1 input
+
+--------------------------------------------------------------------------------
+-- Part Two
+
+evenlyDiv :: [Integer] -> Integer
+evenlyDiv l = sum [ x `div` y | x <- l, y <- l, (x > y) && (x `mod` y == 0) ]
+
+checksum2 :: [[Integer]] -> Integer
+checksum2 = sum . map evenlyDiv
+
+part2 :: IO ()
+part2 = do
+
+  let row1 = [5, 9, 2, 8]
+      row2 = [9, 4, 7, 3]
+      row3 = [3, 8, 6, 5]
+      sheet = [row1, row2, row3]
+
+  isEqual evenlyDiv row1 4
+  isEqual evenlyDiv row2 3
+  isEqual evenlyDiv row3 2
+  isEqual checksum2 sheet 9
+
+  print $ checksum2 input
 
 --------------------------------------------------------------------------------
 -- Main
 
 main :: IO ()
 main = do
+  putStrLn "Part One"
   part1
+  putStrLn ""
+  putStrLn "Part Two"
+  part2
 
 --------------------------------------------------------------------------------
 -- Data
 
-input1 :: [[Integer]]
-input1 = map (map (read . Text.unpack) . Text.split isSpace . Text.pack)
+input :: [[Integer]]
+input = map (map (read . Text.unpack) . Text.split isSpace . Text.pack)
  [ "121 59 141 21 120 67 58 49 22 46 56 112 53 111 104 130"
  , "1926 1910 760 2055 28 2242 146 1485 163 976 1842 1982 137 1387 162 789"
  , "4088 258 2060 1014 4420 177 4159 194 2794 4673 4092 681 174 2924 170 3548"
