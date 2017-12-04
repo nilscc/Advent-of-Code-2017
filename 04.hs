@@ -1,13 +1,11 @@
-import Prelude hiding (words)
+import Prelude hiding (words, lines, length, filter, readFile)
 import Control.Arrow
+import Control.Applicative
 import Data.Char
-import qualified Data.List as L
-import qualified Data.Text as T
-import qualified Data.Text.IO as T
+import Data.List hiding (words, lines)
+import Data.Text hiding (length, filter)
+import Data.Text.IO
 
-getLines = T.lines <$> T.readFile "04.in"
-words = T.split isSpace
+valid = uncurry (==) . ((nub . sort) &&& sort)
 
-valid = uncurry (==) . ((L.nub . L.sort) &&& L.sort)
-
-main = print . length . filter (valid . words) =<< getLines
+main = print . length . filter (valid . words) . lines =<< readFile "04.in"
