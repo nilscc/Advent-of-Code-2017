@@ -1,11 +1,11 @@
-import Prelude hiding (words, lines, length, filter, readFile)
 import Control.Arrow
-import Control.Applicative
-import Data.Char
-import Data.List hiding (words, lines)
-import Data.Text hiding (length, filter)
-import Data.Text.IO
+import Data.List
 
-valid = uncurry (==) . ((nub . sort) &&& sort)
+valid = uncurry (==)
+  .(                      (nub.sort) &&& sort                             )
 
-main = print . length . filter (valid . words) . lines =<< readFile "04.in"
+main =                              print
+ .(                           length *** length                           )
+ .(             filter (valid.words) &&& filter (valid.map sort.words)    )
+ .                                  lines
+ =<< readFile                      "04.in"
