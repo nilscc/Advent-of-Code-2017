@@ -1,4 +1,5 @@
 import qualified Data.Set as S
+import Control.Arrow
 
 main = do
   part1 =<< getInput "07-test.in"
@@ -64,6 +65,6 @@ findUnbalanced e@(Entry _ _ a)
 
 -- simply show entry weight + calculated tower weight, then figure out the rest
 -- manually... :D
-solve l = [ (entryWeight x, calcWeight x) | x <- l ]
+solve = map (entryWeight &&& calcWeight)
 
 part2 = print . solve . findUnbalanced . buildTree
