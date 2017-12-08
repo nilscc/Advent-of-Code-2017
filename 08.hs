@@ -40,4 +40,4 @@ eval mem [] = mem
 
 isTrue mem (Cond var op) = op (M.findWithDefault 0 var mem)
 
-part1 = print . maximum . M.elems . eval M.empty . map (parse . words) . lines
+part1 = print . maximum . eval M.empty . map (parse . words) . lines
