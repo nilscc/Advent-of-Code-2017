@@ -1,5 +1,3 @@
-{-# LANGUAGE FlexibleContexts #-}
-
 import qualified Data.Map as M
 import Data.Maybe
 
@@ -10,27 +8,28 @@ main = do
 --------------------------------------------------------------------------------
 -- Part One
 
-data Cond = Cond String (Integer -> Bool)
-
 data Exp = Exp String (Integer -> Integer) Cond
+
+data Cond = Cond String (Integer -> Bool)
 
 -- parsing
 
 parse :: [String] -> Exp
 parse (var1:op1:val1:"if":var2:op2:val2:[]) =
-  Exp var1 (parseExp op1 val1) (Cond var2 (parseCond op2 val2))
+  Exp var1
+    (parseExp op1 (read val1))
+    (Cond var2 (parseCond op2 (read val2)))
 parse l = error $ "Invalid expression: " ++ show l
 
-parseExp :: String -> String -> (Integer -> Integer)
-parseExp "inc" val a = (a + (read val))
-parseExp "dec" val a = (a - (read val))
+parseExp "inc" val = (+ val)
+parseExp "dec" val = (subtract val)
 
-parseCond "==" val = (== (read val))
-parseCond "<"  val = (<  (read val))
-parseCond "<=" val = (<= (read val))
-parseCond ">"  val = (>  (read val))
-parseCond ">=" val = (>= (read val))
-parseCond "!=" val = (/= (read val))
+parseCond "==" val = (== val)
+parseCond "<"  val = (<  val)
+parseCond "<=" val = (<= val)
+parseCond ">"  val = (>  val)
+parseCond ">=" val = (>= val)
+parseCond "!=" val = (/= val)
 
 -- evaluation
 
