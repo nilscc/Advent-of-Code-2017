@@ -1,9 +1,13 @@
 import qualified Data.Map as M
 import Data.Maybe
 
+test = "b inc 5 if a > 1\na inc 1 if b < 5\nc dec -10 if a >= 1\nc inc -20 if c == 10"
+
 main = do
-  part1 "b inc 5 if a > 1\na inc 1 if b < 5\nc dec -10 if a >= 1\nc inc -20 if c == 10"
+  part1 test
   part1 =<< readFile "08.in"
+  part2 test
+  part2 =<< readFile "08.in"
 
 --------------------------------------------------------------------------------
 -- Part One
@@ -31,13 +35,19 @@ parseCond ">"  val = (>  val)
 parseCond ">=" val = (>= val)
 parseCond "!=" val = (/= val)
 
+prepare = map (parse . words) . lines
+
 -- evaluation
 
-eval mem (Exp var op cond : rest)
-  | isTrue mem cond = eval (M.alter (Just . op . fromMaybe 0) var mem) rest
-  | otherwise       = eval mem rest
-eval mem [] = mem
+eval mem (Exp var op cond)
+  | isTrue mem cond = M.alter (Just . op . fromMaybe 0) var mem
+  | otherwise       = mem
 
 isTrue mem (Cond var op) = op (M.findWithDefault 0 var mem)
 
-part1 = print . maximum . eval M.empty . map (parse . words) . lines
+part1 = print . maximum . foldl eval M.empty . prepare
+
+--------------------------------------------------------------------------------
+-- Part Two
+
+part2 = print . maximum . map maximum . filter (not . null) . scanl eval M.empty . prepare
